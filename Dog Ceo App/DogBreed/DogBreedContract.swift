@@ -64,5 +64,5 @@ protocol DogBreedDetailPresenterProtocol: DogBreedBasePresenterProtocol  {
     var breedName: String { get }
     var subBreedName: String? { get }
     func getImagesCount() -> Int
-    func getImage(for index:Int) -> String
+    func getImage(for index:Int) -> String?
 }

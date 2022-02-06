@@ -11,8 +11,11 @@ import UIKit
 class DogBreedDetailPresenter<I>:DogBreedBasePresenter<I> where I:DogBreedDetailInteractorProtocol {}
 
 extension DogBreedDetailPresenter: DogBreedDetailPresenterProtocol {
-    func getImage(for index: Int) -> String {
-        interactor.getImagesUrl()[index]
+    func getImage(for index: Int) -> String? {
+        guard index < getImagesCount() else {
+            return nil
+        }
+        return interactor.getImagesUrl()[index]
     }
     
     func getImagesCount() -> Int {

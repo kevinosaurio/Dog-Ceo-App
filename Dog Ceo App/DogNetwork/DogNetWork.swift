@@ -31,8 +31,18 @@ public class DogNetwork {
     public static let shared = DogNetwork()
     //MARK: - Private properties
     private var config = DogNetWorkConfig()
+    private var mocks = [DogNetworkConstants.Path:String]()
     
     func callGetRequest<T:Decodable>(path: DogNetworkConstants.Path, completion: @escaping (Result<T,Error>) -> Void) {
+        guard !config.isMock else {
+            if let mockFile = mocks[path], let data = responseMock(mockFile: mockFile), let json = try? JSONDecoder().decode(T.self, from: data) {
+                completion(.success(json))
+            }
+            else {
+                completion(.failure( DogNetworkError.generic))
+            }
+            return
+        }
         guard let url = URL(string: config.baseUrl + path.string) else {
             return completion(.failure(DogNetworkError.badUrl))
         }
@@ -46,12 +56,23 @@ public class DogNetwork {
 
         task.resume()
     }
+    
+    func responseMock(mockFile: String) -> Data? {
+        guard let path = Bundle.main.path(forResource: mockFile, ofType: "json") else {
+            return nil
+        }
+        return try? Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+    }
 }
 
 //MARK: Public Functions
 public extension DogNetwork {
     func setConfig(_ config: DogNetWorkConfig){
         self.config = config
+    }
+    
+    func setMocks(_ mocks:[DogNetworkConstants.Path:String]) {
+        self.mocks = mocks
     }
     
     func callBreeds(completion: @escaping (Result<DogBreedCloudData<[String:[String]]>,Error>) -> Void) {

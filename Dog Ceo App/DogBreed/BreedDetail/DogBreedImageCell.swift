@@ -16,7 +16,10 @@ class DogBreedImageCell: UITableViewCell {
         return imageView
     }()
     
-    func setUp(imageUrl: String) {
+    func setUp(imageUrl: String?) {
+        guard let imageUrl = imageUrl else {
+            return
+        }
         if customImageView.superview == nil {
             contentView.addSubView(customImageView, equalTo: contentView, padding: UIEdgeInsets(top: 6,
                                                                                                 left: 0,

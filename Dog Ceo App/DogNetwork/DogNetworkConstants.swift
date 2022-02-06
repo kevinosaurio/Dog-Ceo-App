@@ -10,7 +10,7 @@ import Foundation
 public enum DogNetworkConstants {
     public static let defaultBaseUrl = "https://dog.ceo/api/"
     
-    public enum Path {
+    public enum Path: Hashable {
         case allBreeds
         case imageBreed(_ breed: String, subBreed: String? = nil)
         
